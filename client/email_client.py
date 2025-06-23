@@ -3,8 +3,10 @@ email client
 """
 
 import smtplib
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
+from email.utils import formataddr
 
 from client.config import Config
 
@@ -41,10 +43,15 @@ class EmailClient:
 
     def send(self, subject, content, receivers=None, recievers_name=None):
         receiver_name = recievers_name if recievers_name else self.__recievers_name
-        message = MIMEText(content, 'plain', 'utf-8')
-        message['From'] = Header(self.__sender_name, 'utf-8')  # 发送者
+        # message = MIMEText(content, 'plain', 'utf-8')
+        message = MIMEMultipart()
+        # message['From'] = Header(self.__sender_name, 'utf-8')  # 发送者 
+        message['From'] = formataddr((self.__sender_name, self.__sender))  # 发送者
         message['To'] = Header(receiver_name, 'utf-8')  # 接收者
         message['Subject'] = Header(subject, 'utf-8')
+
+        message.attach(MIMEText(content, 'html'))
+
 
         receiver = receivers if receivers else self.__receivers
         try:

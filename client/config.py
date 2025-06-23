@@ -20,7 +20,7 @@ class Config:
         else:
             raise Exception('未找到配置文件')
 
-        with open(config_path) as f:
+        with open(config_path, 'r', encoding='utf-8') as f:
             load = json.load(f)
             print(load)
         self.properties = load

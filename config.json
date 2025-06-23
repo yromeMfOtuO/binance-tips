@@ -1,11 +1,11 @@
 {
     "emailConfig": {
         "sender": "weihao.lv@qq.com",
-        "sender_name": "Top Gainer Robot🤖",
+        "sender_name": "Top Gainer Robot",
         "receivers": [
           "weihao.lv@qq.com"
         ],
-//         "recievers_name": "979261307@qq.com",
+        "recievers_name": "weihao.lv",
         "smtpHost": "smtp.qq.com",
         "smtpPort": 465,
         "authCode": "邮箱授权码"

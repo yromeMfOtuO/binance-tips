@@ -2,8 +2,10 @@
 get top gainer and compare with previous day
 """
 import json
+from operator import itemgetter
+import markdown
 
-from little_finger.utils import list_util
+# from little_finger.utils import list_util
 
 from client.binance_client import get_market_data_with_24hr_price_change
 from client.config import Config
@@ -18,7 +20,9 @@ def get_top_gainer():
     if market_data is None:
         return None
 
-    market_data = list_util.sort_by(market_data, "priceChange", reverse=True)
+    # market_data = list_util.sort_by(market_data, "priceChange", reverse=True)
+    market_data.sort(key=itemgetter("priceChange"), reverse=True)
+
 
     # 找到涨幅最大的币种
     return market_data[:10]  # 返回前10个涨幅最大的币种
@@ -70,16 +74,29 @@ def compare_top_gainer(current_top_gainer: list, previous_top_gainer: list):
 
 
 def build_email(comparison: dict) -> dict:
+    md_str = f"""
+
+## today's top gainer:
+    {'\n- ' if comparison['current'] else ''} {"\n- ".join(list(map(lambda x: x['symbol'][:-4], comparison['current'])))}
+
+## yesterday's top gainer: 
+    {'\n- ' if comparison['previous'] else ''} {"\n- ".join(list(map(lambda x: x['symbol'][:-4], comparison['previous'])))}
+
+## difference:
+    {'\n- ' if comparison['notInPrevious'] else ''}{",".join(list(map(lambda x: x[:-4], comparison['notInPrevious'])))}
+"""
+
+    html_content = markdown.markdown(
+        md_str, 
+        extensions=[
+            'markdown.extensions.tables', 
+            'markdown.extensions.fenced_code'
+        ]
+    )
+
     return {
         "subject": "币安现货市场24小时涨幅最大的币种对比",
-        "content": f"""
-yesterday's top gainer: 
-    {",".join(list(map(lambda x: x['symbol'][:-4], comparison['previous'])))}
-today's top gainer:
-    {",".join(list(map(lambda x: x['symbol'][:-4], comparison['current'])))}
-difference:
-    {",".join(list(map(lambda x: x['symbol'][:-4], comparison['notInPrevious'])))}
-""",
+        "content": html_content,
     }
 
 
