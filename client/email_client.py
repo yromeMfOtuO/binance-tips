@@ -23,7 +23,7 @@ class EmailClient:
         self.__sender = config_['sender']
         self.__sender_name = config_['sender_name']
         self.__receivers = config_['receivers']
-        self.__recievers_name = config_['recievers_name']
+        self.__receivers_name = config_['receivers_name']
         self.__host = config_['smtpHost']
         self.__port = config_['smtpPort']
         self.__auth_code = config_['authCode']
@@ -41,8 +41,8 @@ class EmailClient:
             print("client initial error")
             raise Exception("client initial error")
 
-    def send(self, subject, content, receivers=None, recievers_name=None):
-        receiver_name = recievers_name if recievers_name else self.__recievers_name
+    def send(self, subject, content, receivers=None, receivers_name=None):
+        receiver_name = receivers_name if receivers_name else self.__receivers_name
         # message = MIMEText(content, 'plain', 'utf-8')
         message = MIMEMultipart()
         # message['From'] = Header(self.__sender_name, 'utf-8')  # 发送者 
@@ -51,7 +51,6 @@ class EmailClient:
         message['Subject'] = Header(subject, 'utf-8')
 
         message.attach(MIMEText(content, 'html'))
-
 
         receiver = receivers if receivers else self.__receivers
         try:

@@ -1,11 +1,12 @@
 {
     "emailConfig": {
         "sender": "weihao.lv@qq.com",
-        "sender_name": "Top Gainer Robot",
+        "sender_name": "Market Data Robot",
+        "subject": "",
         "receivers": [
           "weihao.lv@qq.com"
         ],
-        "recievers_name": "weihao.lv",
+        "receivers_name": "Winner Team",
         "smtpHost": "smtp.qq.com",
         "smtpPort": 465,
         "authCode": "邮箱授权码"
