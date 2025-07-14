@@ -35,15 +35,11 @@ def compare(current: list, previous: list):
 
 
 def top_gainer_item(coin_data: dict) -> str:
-    return (coin_data['symbol'][:-4] + ':    ' +
-            'Price -> ' + str(coin_data['lastPrice']) +
-            ', Change -> ' + str(coin_data['priceChangePercent']) + '%')
+    return f"| {coin_data['symbol'][:-4]} | {str(coin_data['lastPrice'])} | {str(coin_data['priceChangePercent']) + '%'} |"
 
 
 def top_volume_item(coin_data: dict) -> str:
-    return (coin_data['symbol'][:-4] + ':    ' +
-            'Price -> ' + str(coin_data['lastPrice']) +
-            ', Volume -> ' + str(coin_data['quoteVolume']) + '(U)')
+    return f"| {coin_data['symbol'][:-4]} | {str(coin_data['lastPrice'])}| {str(coin_data['quoteVolume'])} |"
 
 
 def build_email(top_gainer_comparison: dict, top_volume_comparison: dict) -> dict:
@@ -53,11 +49,11 @@ def build_email(top_gainer_comparison: dict, top_volume_comparison: dict) -> dic
 ### Difference:
     {'\n- ' if top_gainer_comparison['notInPrevious'] else ''}{", ".join(list(map(lambda x: x[:-4], top_gainer_comparison['notInPrevious'])))}
 
-### Today's top gainer:
-    {'\n- ' if top_gainer_comparison['current'] else ''} {"\n- ".join(list(map(top_gainer_item, top_gainer_comparison['current'])))}
+### Current top gainer:
+    {'\n | Symbol | Price(U) | Change |\n|:---|:--------|---:|\n' if top_gainer_comparison['current'] else ''} {"\n".join(list(map(top_gainer_item, top_gainer_comparison['current'])))}
 
-### Yesterday's top gainer: 
-    {'\n- ' if top_gainer_comparison['previous'] else ''} {"\n- ".join(list(map(top_gainer_item, top_gainer_comparison['previous'])))}
+### Previous top gainer: 
+    {'\n | Symbol | Price(U) | Change |\n|:---|:--------|---:|\n' if top_gainer_comparison['previous'] else ''} {"\n".join(list(map(top_gainer_item, top_gainer_comparison['previous'])))}
 
 
 ## Top Volume
@@ -65,13 +61,31 @@ def build_email(top_gainer_comparison: dict, top_volume_comparison: dict) -> dic
 ### Difference:
     {'\n- ' if top_volume_comparison['notInPrevious'] else ''}{", ".join(list(map(lambda x: x[:-4], top_volume_comparison['notInPrevious'])))}
 
-### Today's top volume:
-    {'\n- ' if top_volume_comparison['current'] else ''} {"\n- ".join(list(map(top_volume_item, top_volume_comparison['current'])))}
+### Current top volume:
+    {'\n | Symbol | Price(U) | Volume(U) |\n|:---|:-------|---:|\n' if top_volume_comparison['current'] else ''} {"\n".join(list(map(top_volume_item, top_volume_comparison['current'])))}
 
-### Yesterday's top volume: 
-    {'\n- ' if top_volume_comparison['previous'] else ''} {"\n- ".join(list(map(top_volume_item, top_volume_comparison['previous'])))}
+### Previous top volume: 
+    {'\n | Symbol | Price(U) | Volume(U) |\n|:---|:-------|---:|\n' if top_volume_comparison['previous'] else ''} {"\n".join(list(map(top_volume_item, top_volume_comparison['previous'])))}
 
 """
+
+    # 添加CSS样式
+    css_style = """
+        <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        </style>
+    """
 
     html_content = markdown.markdown(
         md_str,
@@ -83,7 +97,7 @@ def build_email(top_gainer_comparison: dict, top_volume_comparison: dict) -> dic
 
     return {
         "subject": "BINANCE.COM Market Data Tips",
-        "content": html_content,
+        "content":  css_style + html_content,
     }
 
 
